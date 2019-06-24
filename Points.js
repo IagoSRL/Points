@@ -80,6 +80,16 @@
 			writable: false
 		});
 
+		Object.defineProperty( pointerEvent, 'stopPropagation', {
+			value: stopPropagation,
+			writable: false
+		});
+
+		Object.defineProperty( pointerEvent, 'stopImmediatePropagation', {
+			value: stopImmediatePropagation,
+			writable: false
+		});
+
 		return pointerEvent;
 	};
 
@@ -184,7 +194,9 @@
 			tiltY:         0,
 			isPrimary:     true,
 
-			preventDefault: preventDefault
+			preventDefault: preventDefault,
+			stopPropagation: stopPropagation,
+			stopImmediatePropagation: stopImmediatePropagation,
 		};
 
 		return createEvent( type, originalEvent, params, noBubble );
@@ -295,7 +307,9 @@
 				tiltY:         0,
 				isPrimary:     activePointers[ touch.identifier ].isPrimary,
 
-				preventDefault: preventDefault
+				preventDefault: preventDefault,
+				stopPropagation: stopPropagation,
+				stopImmediatePropagation: stopImmediatePropagation,
 			};
 
 			return createEvent( type, originalEvent, params, noBubble );
@@ -463,6 +477,16 @@
 		this.originalEvent.preventDefault();
 	}
 
-	// TODO stopPropagation?
+	// Simple support for propagation cancellation: cancels the original event
+	// rather than keep that going and just cancel our 'fake' pointer event
+	// (the ideal case, but more complex; most use cases may not needed, still
+	// an edge case compatibility problem with other scripts interacting on
+	// the same element using another event model)
+	function stopPropagation () {
+		this.originalEvent.stopPropagation();
+	}
+	function stopImmediatePropagation () {
+		this.originalEvent.stopImmediatePropagation();
+	}
 
 }());
