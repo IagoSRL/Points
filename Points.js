@@ -367,6 +367,9 @@
 
 				pointer = activePointers[ touch.identifier ];
 				actualTarget = document.elementFromPoint( touch.clientX, touch.clientY );
+				// May happens that no element exist at the position, because some system overlay like moving a finger to the iOS system navbar,
+				// triggering web events but matching and area out of the web viewport.
+				if (!actualTarget) return;
 
 				if ( pointer.target === actualTarget ) {
 					// just fire a touchmove event
@@ -426,6 +429,9 @@
 				var pointerupEvent, pointeroutEvent, pointerleaveEvent, previousTarget, actualTarget;
 
 				actualTarget = document.elementFromPoint( touch.clientX, touch.clientY );
+				// May happens that no element exist at the position, because some system overlay like moving a finger to the iOS system navbar,
+				// triggering web events but matching and area out of the web viewport.
+				if (!actualTarget) return;
 
 				pointerupEvent = createTouchProxyEvent( 'pointerup', event, touch, false );
 				pointeroutEvent = createTouchProxyEvent( 'pointerout', event, touch, false );
